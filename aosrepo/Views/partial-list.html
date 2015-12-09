@@ -1,0 +1,15 @@
+﻿@Each.Model
+<div style="padding-left: 20px;">
+    <div>
+        <p class="fg-grayLighter" style="width: 7%; display: inline-block;">@Current.Device</p>
+        <p class="fg-grayLighter" style="width: 7%; display: inline-block;">@Current.Type</p>
+        <p class="fg-grayLighter" style="width: 37%; display: inline-block;">
+            Download:
+            <a class="fg-anthilla-green" href="/download/@Current.Guid/@Current.FileName">@Current.FileName</a>
+        </p>
+        <p class="fg-grayLighter" style="width: 7%; display: inline-block;">@Current.Size</p>
+        <p class="fg-grayLighter" style="width: 11%; display: inline-block;">@Current.Date</p>
+        <p class="fg-grayLight" style="width: 28%; display: inline-block;">sha1: @Current.ShaSum</p>
+    </div>
+</div>
+@EndEach
