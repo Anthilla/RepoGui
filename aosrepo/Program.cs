@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Linq;
-using Microsoft.Owin.Hosting;
-using Owin;
-using Nancy;
-using System.Threading;
+﻿using aosrepo.Middleware;
 using Nancy.Owin;
-using aosrepo.Middleware;
+using Owin;
+using System;
+using System.IO;
+using System.Threading;
+using Microsoft.Owin.Hosting;
 
 namespace aosrepo {
     internal static class Program {
@@ -14,13 +12,10 @@ namespace aosrepo {
             try {
                 Console.Title = "aosrepo";
                 ServerConfiguration.CheckDirectories();
-                var port = ServerConfiguration.GetServerPort();
                 var ip = ServerConfiguration.GetServerIp();
-                var options = new StartOptions();
-                var urls = new[] { $"http://{ip}:{port}/" };
-                urls.ToList().ForEach(options.Urls.Add);
-                using (WebApp.Start<Startup>(options)) {
-                    Console.WriteLine("Running a http server on {0}", string.Join(", ", options.Urls));
+                var port = ServerConfiguration.GetServerPort();
+                using (WebApp.Start<Startup>($"http://{ip}:{port}/")) {
+                    Console.WriteLine($"Running a http server on http://{ip}:{port}/");
                     do {
                         Thread.Sleep(60000);
                     } while (!Console.KeyAvailable);
@@ -31,7 +26,11 @@ namespace aosrepo {
                 if (!Directory.Exists(dir)) {
                     Directory.CreateDirectory(dir);
                 }
-                var file = $"{dir}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-crash-report.txt";
+                var reportDir = $"{dir}/report";
+                if (!Directory.Exists(reportDir)) {
+                    Directory.CreateDirectory(reportDir);
+                }
+                var file = $"{reportDir}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-crash-report.txt";
                 File.WriteAllText(file, ex.ToString());
             }
         }
@@ -39,15 +38,13 @@ namespace aosrepo {
 
     internal class Startup {
         public void Configuration(IAppBuilder app) {
-            //StaticConfiguration.DisableErrorTraces = false;
             app.UseDebugMiddleware();
             app.UseNancy();
             app.UseDebugMiddleware(new DebugMiddlewareOptions() {
                 OnIncomingRequest = context => context.Response.WriteAsync("## Beginning ##"),
                 OnOutGoingRequest = context => context.Response.WriteAsync("## End ##")
             });
-            //app.Map("/nancy", mappedApplication => mappedApplication.UseNancy());
-            app.UseNancy(options => options.PassThroughWhenStatusCodesAre(HttpStatusCode.NotFound));
+            app.UseNancy(options => options.PassThroughWhenStatusCodesAre(Nancy.HttpStatusCode.NotFound));
         }
     }
 

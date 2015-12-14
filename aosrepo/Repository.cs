@@ -120,7 +120,7 @@ namespace aosrepo {
 
         private static string GetLastFile() {
             try {
-                var files = Directory.EnumerateFiles(FileDirectory).ToList();
+                var files = Directory.EnumerateFiles(FileDirectory, "*.json").ToList();
                 return !files.Any() ? null : files.Last();
             }
             catch (Exception) {
