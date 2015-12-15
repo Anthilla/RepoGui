@@ -6,7 +6,6 @@ using System.IO;
 using System.Threading;
 using Microsoft.Owin.Hosting;
 using System.Net;
-//using Owin.RequiresHttps;
 
 namespace aosrepo {
     internal static class Program {
