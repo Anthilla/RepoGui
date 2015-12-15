@@ -104,7 +104,7 @@ namespace aosrepo {
             if (!File.Exists(path))
                 return "";
             try {
-                var value = Terminal.Execute($"stat -c '%s' {path}");
+                var value = Terminal.Terminal.Execute($"stat -c '%s' {path}");
                 var ivalue = Convert.ToInt64(value);
                 var mega = ivalue / 1024f / 1024f;
                 return mega.ToString("0.00") + " MB";
@@ -115,7 +115,7 @@ namespace aosrepo {
         }
 
         private static string GetShaSum(string path) {
-            return !File.Exists(path) ? null : Terminal.Execute($"sha1sum {path}").Split(' ').First();
+            return !File.Exists(path) ? null : Terminal.Terminal.Execute($"sha1sum {path}").Split(' ').First();
         }
 
         private static string GetLastFile() {
