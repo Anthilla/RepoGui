@@ -14,20 +14,18 @@ namespace aosrepo {
                 throw new Exception($"File not found {path}");
             }
             try {
-                var ip = ServerConfiguration.GetServerIp();
-                var port = ServerConfiguration.GetServerPort();
-                var certificate = new X509Certificate2(path);
-                var certhash = certificate.GetCertHashString();
+                //var ip = ServerConfiguration.GetServerIp();
+                //var port = ServerConfiguration.GetServerPort();
+                //var certificate = new X509Certificate2(path);
+                //var certhash = certificate.GetCertHashString();
                 //Console.WriteLine(certhash);
-
-                var assembly = Assembly.GetExecutingAssembly();
-                var attribute = (GuidAttribute)assembly.GetCustomAttributes(typeof(GuidAttribute), true)[0];
-                var appid = attribute.Value;
+                //var assembly = Assembly.GetExecutingAssembly();
+                //var attribute = (GuidAttribute)assembly.GetCustomAttributes(typeof(GuidAttribute), true)[0];
+                //var appid = attribute.Value;
                 //Console.WriteLine(appid);
-
                 //netsh http add urlacl url=http://+:9875/ user=Everyone
                 //netsh http add urlacl url=https://+:9876/ user=Everyone
-                //netsh http add sslcert ipport=0.0.0.0:9876 certhash=F8ACE24A36F93B006BFAF495F6C14FB827AC61A3 appid={00000000-0000-0000-0000-AABBCCDDEEFF}
+                ////netsh http add sslcert ipport=0.0.0.0:9876 certhash=F8ACE24A36F93B006BFAF495F6C14FB827AC61A3 appid={00000000-0000-0000-0000-AABBCCDDEEFF}
                 //Terminal.Terminal.Execute($"netsh http add urlacl url=http://+:{port}/ user=Everyone");
                 //Terminal.Terminal.Execute($"netsh http add urlacl url=https://+:12344/ user=Everyone");
                 //Terminal.Terminal.Execute($"netsh http add sslcert ipport=0.0.0.0:12344 certhash={certhash} appid={appid}");
