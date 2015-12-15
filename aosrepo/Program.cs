@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using System.Threading;
 using Microsoft.Owin.Hosting;
+using System.Net;
 //using Owin.RequiresHttps;
 
 namespace aosrepo {
@@ -39,9 +40,10 @@ namespace aosrepo {
 
     internal class Startup {
         public void Configuration(IAppBuilder app) {
-            //app.UseCertificate("/cfg/aosrepo/certificate.pfx");
-            //var redirectOptions = new RequiresHttpsOptions() { RedirectToHttpsPath = "https://127.0.0.1:12344/" };
-            //app.RequiresHttps(redirectOptions);
+            object httpListener;
+            if (app.Properties.TryGetValue(typeof(HttpListener).FullName, out httpListener) && httpListener is HttpListener) {
+                ((HttpListener)httpListener).IgnoreWriteExceptions = true;
+            }
             app.UseDebugMiddleware();
             app.UseNancy();
             app.UseDebugMiddleware(new DebugMiddlewareOptions() {
@@ -49,6 +51,7 @@ namespace aosrepo {
                 OnOutGoingRequest = context => context.Response.WriteAsync("## End ##")
             });
             app.UseNancy(options => options.PassThroughWhenStatusCodesAre(Nancy.HttpStatusCode.NotFound));
+
         }
     }
 
