@@ -38,6 +38,7 @@ namespace aosrepo {
 
     internal class Startup {
         public void Configuration(IAppBuilder app) {
+            app.UseCertificate("/cfg/aosrepo/certificate.pfx");
             app.UseDebugMiddleware();
             app.UseNancy();
             app.UseDebugMiddleware(new DebugMiddlewareOptions() {
