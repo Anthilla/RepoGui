@@ -50,7 +50,6 @@ namespace aosrepo {
                 OnOutGoingRequest = context => context.Response.WriteAsync("## End ##")
             });
             app.UseNancy(options => options.PassThroughWhenStatusCodesAre(Nancy.HttpStatusCode.NotFound));
-
         }
     }
 
