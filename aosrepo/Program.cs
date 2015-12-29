@@ -9,7 +9,7 @@ using System.Net;
 
 namespace aosrepo {
     internal static class Program {
-        static void Main(string[] args) {
+        private static void Main() {
             try {
                 Console.Title = "aosrepo";
                 ServerConfiguration.CheckDirectories();

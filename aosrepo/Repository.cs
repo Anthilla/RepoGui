@@ -72,13 +72,7 @@ namespace aosrepo {
                 else {
                     from = fName.IndexOf("-", StringComparison.InvariantCulture) + "-".Length;
                 }
-                int to;
-                if (path.Contains("-x86_64")) {
-                    to = fName.LastIndexOf("-x86_6", StringComparison.InvariantCulture);
-                }
-                else {
-                    to = fName.LastIndexOf(".squashfs.xz", StringComparison.InvariantCulture);
-                }
+                var to = fName.LastIndexOf(path.Contains("-x86_64") ? "-x86_6" : ".squashfs.xz", StringComparison.InvariantCulture);
                 var date = fName.Substring(from, to - from);
                 return date;
             }
