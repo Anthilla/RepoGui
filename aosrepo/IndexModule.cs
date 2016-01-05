@@ -7,7 +7,6 @@ using Nancy.Responses;
 namespace aosrepo {
     public class IndexModule : NancyModule {
         public IndexModule() {
-
             Get["/"] = x => {
                 dynamic model = new ExpandoObject();
                 model.Repo = Repository.GetAll();
