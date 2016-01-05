@@ -1,4 +1,5 @@
-﻿using System.Dynamic;
+﻿using System.Collections.Generic;
+using System.Dynamic;
 using System.IO;
 using Nancy;
 using Nancy.Responses;
@@ -23,6 +24,11 @@ namespace aosrepo {
                 var file = new FileStream($"/{path}", FileMode.Open);
                 var response = new StreamResponse(() => file, MimeTypes.GetMimeType(fileName));
                 return response.AsAttachment(fileName);
+            };
+
+            Get["/update/context"] = x => {
+                var list = new List<string> { "antd", "antdsh", "kernel", "system" };
+                return Response.AsJson(list);
             };
 
             Get["/update/info/{item}/{date}"] = x => {
