@@ -47,7 +47,7 @@ namespace aosrepo {
                     }
                     repos.Add(new RepoModel {
                         Name = directory.Split('/').Last().Split('.').Last().ToLower(),
-                        Files = list.OrderByDescending(_ => _.Order).ToList()
+                        Files = list.OrderByDescending(_ => _.Order).ThenByDescending(_ => _.FileName).ToList()
                     });
                 }
                 var filePath = $"{FileDirectory}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-filerepo.json";
@@ -65,13 +65,9 @@ namespace aosrepo {
                 return "";
             try {
                 var fName = Path.GetFileName(path).Trim();
-                int from;
-                if (path.Contains("-aufs-")) {
-                    from = fName.IndexOf("-aufs-", StringComparison.InvariantCulture) + "-aufs-".Length;
-                }
-                else {
-                    from = fName.IndexOf("-", StringComparison.InvariantCulture) + "-".Length;
-                }
+                var from = path.Contains("-aufs-")
+                    ? fName.IndexOf("-aufs-", StringComparison.InvariantCulture) + "-aufs-".Length
+                    : fName.IndexOf("-", StringComparison.InvariantCulture) + "-".Length;
                 var to = fName.LastIndexOf(path.Contains("-x86_64") ? "-x86_6" : ".squashfs.xz", StringComparison.InvariantCulture);
                 return fName.Substring(from, to - from);
             }
