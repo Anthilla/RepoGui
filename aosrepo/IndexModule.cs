@@ -24,6 +24,13 @@ namespace aosrepo {
                 var response = new StreamResponse(() => file, MimeTypes.GetMimeType(fileName));
                 return response.AsAttachment(fileName);
             };
+
+            Get["/update/info/{item}/{date}"] = x => {
+                var item = (string)x.item;
+                var date = (string)x.date;
+                var response = UpdateManagement.GetUpdateInfo(item, date);
+                return Response.AsJson(response);
+            };
         }
 
         private static HttpStatusCode Update() {

@@ -46,7 +46,7 @@ namespace aosrepo {
                         });
                     }
                     repos.Add(new RepoModel {
-                        Name = directory.Split('/').Last().Split('.').Last(),
+                        Name = directory.Split('/').Last().Split('.').Last().ToLower(),
                         Files = list.OrderByDescending(_ => _.Order).ToList()
                     });
                 }
@@ -73,8 +73,7 @@ namespace aosrepo {
                     from = fName.IndexOf("-", StringComparison.InvariantCulture) + "-".Length;
                 }
                 var to = fName.LastIndexOf(path.Contains("-x86_64") ? "-x86_6" : ".squashfs.xz", StringComparison.InvariantCulture);
-                var date = fName.Substring(from, to - from);
-                return date;
+                return fName.Substring(from, to - from);
             }
             catch (Exception) {
                 return "";
@@ -135,6 +134,10 @@ namespace aosrepo {
             catch (Exception) {
                 return new List<RepoModel>();
             }
+        }
+
+        public static RepoModel GetByName(string name) {
+            return GetAll().FirstOrDefault(_ => _.Name == name);
         }
 
         public static string GetFilePath(string guid) {
