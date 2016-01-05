@@ -5,9 +5,7 @@ using System.Linq;
 namespace aosrepo {
     public class UpdateManagement {
         public static IEnumerable<KeyValuePair<string, string>> GetUpdateInfo(string context, string currentVersion) {
-            Repository.Update();
             if (context == "kernel") {
-                //todo metodo ad-hoc per aggiornare il kernel
                 var kernelRepo = Repository.GetByName(context);
                 var firmwareFile = kernelRepo.Files.First(_ => _.FileName.Contains("DIR_lib64_firmware"));
                 var modulesFile = kernelRepo.Files.First(_ => _.FileName.Contains("DIR_lib64_modules"));
