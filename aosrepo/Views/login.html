@@ -1,0 +1,86 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <title>@Model.Title</title>
+    <style type="text/css">
+        .bg-anthilla-gray {
+            background: #3A3A3A !important;
+        }
+
+        .bg-anthilla-lightgray {
+            background: #535353 !important;
+        }
+
+        .bg-anthilla-green {
+            background: #a7bd39 !important;
+        }
+
+        .fg-anthilla-gray {
+            color: #3A3A3A !important;
+        }
+
+        .fg-anthilla-lightgray {
+            background: #535353 !important;
+        }
+
+        .fg-anthilla-green {
+            color: #a7bd39 !important;
+        }
+
+        .bd-anthilla-gray {
+            border-color: #3A3A3A !important;
+        }
+
+        .bd-anthilla-lightgray {
+            background: #535353 !important;
+        }
+
+        .bd-anthilla-green {
+            border-color: #a7bd39 !important;
+        }
+
+        .listview-outlook .list:active,
+        .listview-outlook .list:focus,
+        .listview-outlook .list.active {
+            background-color: transparent !important;
+        }
+
+        .listview-outlook .list:hover {
+            background-color: #646464 !important;
+        }
+
+        .listview-outlook .list-group .list-group-toggle:hover:before {
+            border-bottom-color: #a7bd39 !important;
+        }
+    </style>
+</head>
+<body class="padding30 bg-anthilla-lightgray">
+    <form action="/login" method="POST" enctype="multipart/form-data" class="fg-white" style="width: 300px; position: relative; left: 50%; margin-left: -150px; margin-top: 75px;">
+        <img alt="anthilla" id="anthilla-logo" src="/Content/anthilla_logo.png">
+        <h4 style="text-align: center;">Aos Repository</h4>
+
+        <div class="cell">
+            <label>Username</label>
+            <div class="input-control text full-size">
+                <input class="bg-anthilla-gray fg-white bd-anthilla-green" type="text" name="Username">
+            </div>
+        </div>
+        <div class="cell">
+            <label>Password</label>
+            <div class="input-control password full-size">
+                <input class="bg-anthilla-gray fg-white bd-anthilla-green" type="password" name="Password">
+            </div>
+        </div>
+        <br>
+        <input type="submit" class="bg-anthilla-green fg-anthilla-gray bd-anthilla-green" value="LOGIN" style="width: 100%;">
+        <br>
+    </form>
+
+    <p style="text-align: center; font-size: 10px;" class="fg-white">@Model.Copyright</p>
+
+    <link async="" href="/Content/metro.min.css" type="text/css" rel="stylesheet">
+    <link async="" href="/Content/metro-icons.min.css" type="text/css" rel="stylesheet">
+    <script src="/Scripts/jquery-2.2.0.min.js"></script>
+    <script async="" src="/Scripts/metro.min.js"></script>
+</body>
+</html>

@@ -4,7 +4,7 @@ using System.IO;
 using Nancy;
 using Nancy.Responses;
 
-namespace aosrepo {
+namespace aosrepo.Modules {
     public class IndexModule : NancyModule {
         public IndexModule() {
             Get["/"] = x => {

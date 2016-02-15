@@ -9,12 +9,14 @@ namespace aosrepo {
     public class Repository {
         public static void Update() {
             Console.WriteLine("doing update");
-            ListDirectories(new[] {
+            var dirs = new List<string> {
                 "/Data/Dev01/AOS_Repo/update.antd",
                 "/Data/Dev01/AOS_Repo/update.antdsh",
                 "/Data/Dev01/AOS_Repo/update.kernel",
                 "/Data/Dev01/AOS_Repo/update.system"
-            });
+            };
+            dirs.AddRange(Settings.GetDirectories());
+            ListDirectories(dirs);
         }
 
         public static string FileDirectory => "/cfg/aosrepo";

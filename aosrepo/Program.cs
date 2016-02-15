@@ -15,6 +15,7 @@ namespace aosrepo {
                 ServerConfiguration.CheckDirectories();
                 var ip = ServerConfiguration.GetServerIp();
                 var port = ServerConfiguration.GetServerPort();
+                ServerConfiguration.SetSettingsFile();
                 using (WebApp.Start<Startup>($"http://{ip}:{port}/")) {
                     Console.WriteLine($"Running on http://{ip}:{port}/");
                     do {
@@ -81,6 +82,14 @@ namespace aosrepo {
                 File.WriteAllText(portConfigFile, "+");
             }
             return File.ReadAllText(portConfigFile).Trim();
+        }
+
+        public static void SetSettingsFile() {
+            const string configDir = "/cfg/aosrepo/config";
+            var portConfigFile = $"{configDir}/watch.cfg";
+            if (!File.Exists(portConfigFile)) {
+                File.WriteAllText(portConfigFile, "");
+            }
         }
     }
 }
