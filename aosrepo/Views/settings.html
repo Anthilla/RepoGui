@@ -62,11 +62,7 @@
     <hr class="bg-anthilla-green" />
     <h4 class="fg-white">Public Directories</h4>
     <form action="/settings" method="POST" enctype="multipart/form-data" class="fg-white">
-        <textarea class="bg-anthilla-gray fg-white bd-anthilla-green" name="Text" style="width: 100%;">
-            @Each.Directories
-                @Current
-            @EndEach
-        </textarea>
+        <textarea class="bg-anthilla-gray fg-white bd-anthilla-green" name="Text" style="width: 100%;">@Model.Directories</textarea>
         <br>
         <input type="submit" class="bg-anthilla-green fg-anthilla-gray bd-anthilla-green" value="SAVE" style="width: 100%;">
     </form>

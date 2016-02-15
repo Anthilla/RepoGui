@@ -10,13 +10,13 @@ namespace aosrepo.Modules {
 
             Get["/settings"] = x => {
                 dynamic model = new ExpandoObject();
-                model.Directories = Settings.GetDirectories();
+                model.Directories = Settings.GetDirectoriesAsText();
                 return View["settings", model];
             };
 
             Post["/settings"] = x => {
                 var text = (string)Request.Form.Text;
-                Settings.Update(text.Split(new[] { Environment.NewLine }, StringSplitOptions.RemoveEmptyEntries));
+                Settings.Update(text);
                 return Response.AsRedirect("/settings");
             };
         }
