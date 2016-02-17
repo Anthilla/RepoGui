@@ -15,8 +15,7 @@ namespace aosrepo {
                 "/Data/Dev01/AOS_Repo/update.kernel",
                 "/Data/Dev01/AOS_Repo/update.system"
             };
-            dirs.AddRange(Settings.GetDirectories());
-            ListDirectories(dirs);
+            ListDirectories(dirs, Settings.GetDirectories());
         }
 
         public static string FileDirectory => "/cfg/aosrepo";
@@ -34,6 +33,68 @@ namespace aosrepo {
                     _.Contains("initramfs") ||
                     _.Contains("kernel")
                     ).ToList();
+                    foreach (var file in files) {
+                        list.Add(new FileModel {
+                            Guid = Guid.NewGuid().ToString(),
+                            ShaSum = GetShaSum(file).Trim(),
+                            Date = GetDate(file).Trim(),
+                            Order = GetOrder(file).Trim(),
+                            FilePath = file.Trim().TrimStart('/'),
+                            FileName = Path.GetFileName(file).Trim(),
+                            Size = GetSize(file).Trim(),
+                            Device = "x86_64",
+                            Type = "nightly",
+                        });
+                    }
+                    repos.Add(new RepoModel {
+                        Name = directory.Split('/').Last().Split('.').Last().ToLower(),
+                        Files = list.OrderByDescending(_ => _.Order).ThenByDescending(_ => _.FileName).ToList()
+                    });
+                }
+                var filePath = $"{FileDirectory}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-filerepo.json";
+                var json = JsonConvert.SerializeObject(repos);
+                File.WriteAllText(filePath, json);
+            }
+            catch (Exception ex) {
+                Console.WriteLine(ex);
+                throw;
+            }
+        }
+
+        private static void ListDirectories(IEnumerable<string> directories, IEnumerable<string> otherDirectories) {
+            if (!Directory.Exists(FileDirectory))
+                return;
+            try {
+                var repos = new List<RepoModel>();
+                foreach (var directory in directories) {
+                    var list = new List<FileModel>();
+                    var files = Directory.EnumerateFiles(directory).Where(_ =>
+                    _.EndsWith(".squashfs.xz") ||
+                    _.Contains("System.map") ||
+                    _.Contains("initramfs") ||
+                    _.Contains("kernel")
+                    ).ToList();
+                    foreach (var file in files) {
+                        list.Add(new FileModel {
+                            Guid = Guid.NewGuid().ToString(),
+                            ShaSum = GetShaSum(file).Trim(),
+                            Date = GetDate(file).Trim(),
+                            Order = GetOrder(file).Trim(),
+                            FilePath = file.Trim().TrimStart('/'),
+                            FileName = Path.GetFileName(file).Trim(),
+                            Size = GetSize(file).Trim(),
+                            Device = "x86_64",
+                            Type = "nightly",
+                        });
+                    }
+                    repos.Add(new RepoModel {
+                        Name = directory.Split('/').Last().Split('.').Last().ToLower(),
+                        Files = list.OrderByDescending(_ => _.Order).ThenByDescending(_ => _.FileName).ToList()
+                    });
+                }
+                foreach (var directory in otherDirectories) {
+                    var list = new List<FileModel>();
+                    var files = Directory.EnumerateFiles(directory).ToList();
                     foreach (var file in files) {
                         list.Add(new FileModel {
                             Guid = Guid.NewGuid().ToString(),

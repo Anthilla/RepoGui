@@ -103,8 +103,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Bootstrapper.cs" />
+    <Compile Include="Download.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="FileModel.cs" />
+    <Compile Include="FileManagement.cs" />
     <Compile Include="Login\UserDatabase.cs" />
     <Compile Include="Login\UserEntity.cs" />
     <Compile Include="Modules\IndexModule.cs" />
