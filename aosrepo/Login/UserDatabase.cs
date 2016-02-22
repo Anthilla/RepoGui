@@ -3,6 +3,7 @@ using Nancy.Authentication.Forms;
 using Nancy.Security;
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 
 namespace aosrepo.Login {
@@ -26,12 +27,20 @@ namespace aosrepo.Login {
                             ClaimGuid = "00000000-0000-0000-0000-000000000500",
                             Type= UserEntity.ClaimType.UserPassword,
                             Key = "master-password",
-                            Value= "master123"
+                            Value= GetMasterPassword()
                         }
                     }
                 }
             };
             return userList;
+        }
+
+        private static string GetMasterPassword() {
+            var path = "/cfg/aosrepo/config/master.cfg";
+            if (!File.Exists(path)) {
+                return string.Empty;
+            }
+            return File.ReadAllText(path.Trim());
         }
 
         public IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context) {
