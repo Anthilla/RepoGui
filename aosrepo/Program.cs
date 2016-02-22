@@ -3,13 +3,12 @@ using Nancy.Owin;
 using Owin;
 using System;
 using System.IO;
-using System.Threading;
 using Microsoft.Owin.Hosting;
 using System.Net;
 
 namespace aosrepo {
     internal static class Program {
-        private static void Main() {
+        private static void Main(string[] args) {
             try {
                 Console.Title = "aosrepo";
                 ServerConfiguration.CheckDirectories();
@@ -18,9 +17,14 @@ namespace aosrepo {
                 ServerConfiguration.SetSettingsFile();
                 using (WebApp.Start<Startup>($"http://{ip}:{port}/")) {
                     Console.WriteLine($"Running on http://{ip}:{port}/");
-                    do {
-                        Thread.Sleep(60000);
-                    } while (!Console.KeyAvailable);
+                    while (true) {
+                        var command = args.Length > 0 ? args[0] : Console.ReadLine();
+                        if (!string.IsNullOrEmpty(command)) {
+                            Command.Loop(command.Trim());
+                            continue;
+                        }
+                        continue;
+                    }
                 }
             }
             catch (Exception ex) {
@@ -34,6 +38,20 @@ namespace aosrepo {
                 }
                 var file = $"{reportDir}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-crash-report.txt";
                 File.WriteAllText(file, ex.ToString());
+            }
+        }
+    }
+
+    public class Command {
+        public static void Loop(string command) {
+            switch (command) {
+                case "update":
+                    Repository.Update();
+                    Console.WriteLine("Repository up to date!");
+                    return;
+                default:
+                    Console.WriteLine($"{command} command does not exist");
+                    return;
             }
         }
     }

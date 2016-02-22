@@ -59,6 +59,7 @@ namespace aosrepo.Modules {
 
         private static HttpStatusCode Update() {
             Repository.Update();
+            Console.WriteLine("Repository update...");
             return HttpStatusCode.OK;
         }
     }

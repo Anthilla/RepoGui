@@ -47,6 +47,9 @@ namespace aosrepo.Login {
         }
 
         public static Guid? ValidateUser(string userIdentity, string password) {
+            
+
+
             if (userIdentity == "fakeadmin" && password == "fake_password123") {
                 return Guid.Parse("00000000-0000-0000-0000-000000000500");
             }

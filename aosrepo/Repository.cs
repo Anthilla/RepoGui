@@ -25,7 +25,7 @@ namespace aosrepo {
                 return;
             try {
                 var repos = new List<RepoModel>();
-                foreach (var directory in directories) {
+                foreach (var directory in directories.Where(_ => Directory.Exists(_))) {
                     var list = new List<FileModel>();
                     var files = Directory.EnumerateFiles(directory).Where(_ =>
                     _.EndsWith(".squashfs.xz") ||
@@ -66,7 +66,7 @@ namespace aosrepo {
                 return;
             try {
                 var repos = new List<RepoModel>();
-                foreach (var directory in directories) {
+                foreach (var directory in directories.Where(_ => Directory.Exists(_))) {
                     var list = new List<FileModel>();
                     var files = Directory.EnumerateFiles(directory).Where(_ =>
                     _.EndsWith(".squashfs.xz") ||
@@ -92,7 +92,7 @@ namespace aosrepo {
                         Files = list.OrderByDescending(_ => _.Order).ThenByDescending(_ => _.FileName).ToList()
                     });
                 }
-                foreach (var directory in otherDirectories) {
+                foreach (var directory in otherDirectories.Where(_ => Directory.Exists(_))) {
                     var list = new List<FileModel>();
                     var files = Directory.EnumerateFiles(directory).ToList();
                     foreach (var file in files) {

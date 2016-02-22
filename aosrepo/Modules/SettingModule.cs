@@ -19,6 +19,15 @@ namespace aosrepo.Modules {
                 Settings.Update(text);
                 return Response.AsRedirect("/settings");
             };
+
+            Get["/update"] = x => Update();
+            Post["/update"] = x => Update();
+        }
+
+        private static HttpStatusCode Update() {
+            Repository.Update();
+            Console.WriteLine("Repository update...");
+            return HttpStatusCode.OK;
         }
     }
 }
