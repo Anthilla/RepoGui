@@ -26,7 +26,7 @@ namespace aosrepo.Login {
                             ClaimGuid = "00000000-0000-0000-0000-000000000500",
                             Type= UserEntity.ClaimType.UserPassword,
                             Key = "master-password",
-                            Value= "fake_password123"
+                            Value= "master123"
                         }
                     }
                 }
