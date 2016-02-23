@@ -32,8 +32,7 @@ namespace aosrepo.Modules {
                             fileStream.CopyTo(stream);
                         }
                     };
-                    return View["home", response];
-                    //return response;
+                    return response;
                 }
                 catch (Exception ex) {
                     Console.WriteLine($"download failed: {ex}");
