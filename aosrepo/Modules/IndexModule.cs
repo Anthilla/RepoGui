@@ -56,7 +56,7 @@ namespace aosrepo.Modules {
                 return Response.AsJson(response);
             };
 
-            Get["/update/antd"] = x => {
+            Get["/latest/antd"] = x => {
                 var repo = Repository.GetByName("antd");
                 var latestFile = repo.Files.OrderBy(_ => _.Date).LastOrDefault();
                 var guid = latestFile.Guid;
