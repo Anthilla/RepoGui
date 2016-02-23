@@ -1,6 +1,7 @@
 ﻿using System.Collections.Generic;
 using System.Dynamic;
 using System.IO;
+using System.Linq;
 using Nancy;
 using Nancy.Responses;
 using System;
@@ -53,6 +54,34 @@ namespace aosrepo.Modules {
                 var date = (string)x.date;
                 var response = UpdateManagement.GetUpdateInfo(item, date);
                 return Response.AsJson(response);
+            };
+
+            Get["/update/antd"] = x => {
+                var repo = Repository.GetByName("antd");
+                var latestFile = repo.Files.OrderBy(_ => _.Date).LastOrDefault();
+                var guid = latestFile.Guid;
+                var fileName = latestFile.FileName;
+                var path = Repository.GetFilePath(guid);
+                try {
+                    var fileInfo = new FileInfo(path);
+                    var response = new Response();
+                    response.ContentType = MimeTypes.GetMimeType(path);
+                    response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
+                    response.Headers.Add("Content-Length", fileInfo.Length.ToString());
+                    response.Contents = stream => {
+                        using (var fileStream = File.OpenRead($"/{path}")) {
+                            fileStream.CopyTo(stream);
+                        }
+                    };
+                    return response;
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"download failed: {ex}");
+                    Console.WriteLine("retry file download");
+                    var file = new FileStream($"/{path}", FileMode.Open);
+                    var response = new StreamResponse(() => file, MimeTypes.GetMimeType(path));
+                    return response.AsAttachment(fileName);
+                }
             };
         }
 
