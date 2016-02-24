@@ -83,6 +83,62 @@ namespace aosrepo.Modules {
                     return response.AsAttachment(fileName);
                 }
             };
+
+            Get["/latest/antdsh"] = x => {
+                var repo = Repository.GetByName("antdsh");
+                var latestFile = repo.Files.OrderBy(_ => _.Date).LastOrDefault();
+                var guid = latestFile.Guid;
+                var fileName = latestFile.FileName;
+                var path = Repository.GetFilePath(guid);
+                try {
+                    var fileInfo = new FileInfo(path);
+                    var response = new Response();
+                    response.ContentType = MimeTypes.GetMimeType(path);
+                    response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
+                    response.Headers.Add("Content-Length", fileInfo.Length.ToString());
+                    response.Contents = stream => {
+                        using (var fileStream = File.OpenRead($"/{path}")) {
+                            fileStream.CopyTo(stream);
+                        }
+                    };
+                    return response;
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"download failed: {ex}");
+                    Console.WriteLine("retry file download");
+                    var file = new FileStream($"/{path}", FileMode.Open);
+                    var response = new StreamResponse(() => file, MimeTypes.GetMimeType(path));
+                    return response.AsAttachment(fileName);
+                }
+            };
+
+            Get["/latest/system"] = x => {
+                var repo = Repository.GetByName("system");
+                var latestFile = repo.Files.OrderBy(_ => _.Date).LastOrDefault();
+                var guid = latestFile.Guid;
+                var fileName = latestFile.FileName;
+                var path = Repository.GetFilePath(guid);
+                try {
+                    var fileInfo = new FileInfo(path);
+                    var response = new Response();
+                    response.ContentType = MimeTypes.GetMimeType(path);
+                    response.Headers.Add("Content-Disposition", $"attachment; filename={fileName}");
+                    response.Headers.Add("Content-Length", fileInfo.Length.ToString());
+                    response.Contents = stream => {
+                        using (var fileStream = File.OpenRead($"/{path}")) {
+                            fileStream.CopyTo(stream);
+                        }
+                    };
+                    return response;
+                }
+                catch (Exception ex) {
+                    Console.WriteLine($"download failed: {ex}");
+                    Console.WriteLine("retry file download");
+                    var file = new FileStream($"/{path}", FileMode.Open);
+                    var response = new StreamResponse(() => file, MimeTypes.GetMimeType(path));
+                    return response.AsAttachment(fileName);
+                }
+            };
         }
 
         private static HttpStatusCode Update() {
