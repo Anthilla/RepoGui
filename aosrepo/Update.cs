@@ -7,12 +7,12 @@ namespace aosrepo {
         public static IEnumerable<KeyValuePair<string, string>> GetUpdateInfo(string context, string currentVersion) {
             if (context == "kernel") {
                 var kernelRepo = Repository.GetByName(context);
-                var firmwareFile = kernelRepo.Files.First(_ => _.FileName.Contains("DIR_lib64_firmware"));
-                var modulesFile = kernelRepo.Files.First(_ => _.FileName.Contains("DIR_lib64_modules"));
-                var sysmapFile = kernelRepo.Files.First(_ => _.FileName.Contains("System.map-genkernel"));
-                var initramfsFile = kernelRepo.Files.First(_ => _.FileName.Contains("initramfs-genkernel"));
-                var kernelFile = kernelRepo.Files.First(_ => _.FileName.Contains("kernel-genkernel"));
-                var xenFile = kernelRepo.Files.First(_ => _.FileName.Contains("xen-"));
+                var firmwareFile = kernelRepo.Files.FirstOrDefault(_ => _.FileName.Contains("DIR_lib64_firmware"));
+                var modulesFile = kernelRepo.Files.FirstOrDefault(_ => _.FileName.Contains("DIR_lib64_modules"));
+                var sysmapFile = kernelRepo.Files.FirstOrDefault(_ => _.FileName.Contains("System.map-genkernel"));
+                var initramfsFile = kernelRepo.Files.FirstOrDefault(_ => _.FileName.Contains("initramfs-genkernel"));
+                var kernelFile = kernelRepo.Files.FirstOrDefault(_ => _.FileName.Contains("kernel-genkernel"));
+                var xenFile = kernelRepo.Files.FirstOrDefault(_ => _.FileName.Contains("xen-"));
                 var modnewestDate = Convert.ToInt32(modulesFile.Order);
                 var modcurrentDate = Convert.ToInt32(currentVersion);
                 string modupdate;
@@ -61,7 +61,7 @@ namespace aosrepo {
                 };
             }
             var repo = Repository.GetByName(context);
-            var newestFile = repo.Files.First();
+            var newestFile = repo.Files.FirstOrDefault();
             var newestDate = Convert.ToInt32(newestFile.Order);
             var currentDate = Convert.ToInt32(currentVersion);
             string update;
