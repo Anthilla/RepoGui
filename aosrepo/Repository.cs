@@ -9,22 +9,29 @@ using aosrepo.Model;
 namespace aosrepo {
     public class Repository {
         private static string sharedRepoDirectory = "/Data/Dev01/AOS_Repo/repo.public";
+        private static string serverListFile = "server.list";
         private static string repoListFile = "repo.list";
 
         public static IEnumerable<FileInfoModel> GetFileInfo() {
-            var repoListPath = $"{sharedRepoDirectory}/{repoListFile}";
-            var list = File.ReadAllLines(repoListPath);
-            var files = new List<FileInfoModel>();
-            foreach (var f in list) {
-                var s = f.Split(new[] { ' ' }, 3);
-                var fi = new FileInfoModel {
-                    FileHash = s[0],
-                    FileContext = s[1],
-                    FileName = s[2]
-                };
-                files.Add(fi);
+            try {
+                var repoListPath = $"{sharedRepoDirectory}/{repoListFile}";
+                var list = File.ReadAllLines(repoListPath);
+                var files = new List<FileInfoModel>();
+                foreach (var f in list) {
+                    var s = f.Split(new[] { ' ' }, 3);
+                    var fi = new FileInfoModel {
+                        FileHash = s[0],
+                        FileContext = s[1],
+                        FileName = s[2]
+                    };
+                    files.Add(fi);
+                }
+                return files;
             }
-            return files;
+            catch(Exception ex) {
+                Console.WriteLine($"error: {ex.Message}");
+                return new List<FileInfoModel>();
+            }
         }
 
         public static string FileDirectory => "/cfg/aosrepo";
@@ -49,7 +56,7 @@ namespace aosrepo {
                             ShaSum = file.FileHash,
                             Date = GetDate(file.FileName).Trim(),
                             Order = GetOrder(file.FileName).Trim(),
-                            FilePath = fpath,
+                            FilePath = GetDownloadUrl(file.FileName),
                             FileName = file.FileName,
                             Size = GetSize(fpath).Trim(),
                             Device = "x86_64",
@@ -67,6 +74,12 @@ namespace aosrepo {
                 Console.WriteLine(ex);
                 return new List<RepoModel>();
             }
+        }
+
+        private static string GetDownloadUrl(string fileName) {
+            var serverListPath = $"{sharedRepoDirectory}/{serverListFile}";
+            var srv = File.ReadAllLines(serverListPath);
+            return $"{srv.FirstOrDefault()}:8080/{fileName}";
         }
 
         private static string GetOrder(string path) {

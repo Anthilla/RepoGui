@@ -5,6 +5,7 @@ using System;
 using System.IO;
 using Microsoft.Owin.Hosting;
 using System.Net;
+using Nancy;
 
 namespace aosrepo {
     internal static class Program {
@@ -68,6 +69,7 @@ namespace aosrepo {
                 OnIncomingRequest = context => context.Response.WriteAsync("## Beginning ##"),
                 OnOutGoingRequest = context => context.Response.WriteAsync("## End ##")
             });
+            //StaticConfiguration.DisableErrorTraces = false;
             app.UseNancy(options => options.PassThroughWhenStatusCodesAre(Nancy.HttpStatusCode.NotFound));
         }
     }
