@@ -108,6 +108,7 @@
     <Compile Include="FileManagement.cs" />
     <Compile Include="Login\UserDatabase.cs" />
     <Compile Include="Login\UserEntity.cs" />
+    <Compile Include="Model\FileInfoModel.cs" />
     <Compile Include="Modules\IndexModule.cs" />
     <Compile Include="Middleware\DebugMiddleware.cs" />
     <Compile Include="Middleware\DebugMiddlewareExtensions.cs" />
@@ -117,6 +118,7 @@
     <Compile Include="NancyExtensions.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="OldRepository.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Terminal\Terminal.cs" />

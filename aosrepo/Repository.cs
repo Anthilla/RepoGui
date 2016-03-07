@@ -4,122 +4,68 @@ using System.Globalization;
 using System.IO;
 using System.Linq;
 using Newtonsoft.Json;
+using aosrepo.Model;
 
 namespace aosrepo {
     public class Repository {
-        public static void Update() {
-            Console.WriteLine("doing update");
-            var dirs = new List<string> {
-                "/Data/Dev01/AOS_Repo/update.antd",
-                "/Data/Dev01/AOS_Repo/update.antdsh",
-                "/Data/Dev01/AOS_Repo/update.kernel",
-                "/Data/Dev01/AOS_Repo/update.system"
-            };
-            ListDirectories(dirs, Settings.GetDirectories());
+        private static string sharedRepoDirectory = "/Data/Dev01/AOS_Repo/repo.public";
+        private static string repoListFile = "repo.list";
+
+        public static IEnumerable<FileInfoModel> GetFileInfo() {
+            var repoListPath = $"{sharedRepoDirectory}/{repoListFile}";
+            var list = File.ReadAllLines(repoListPath);
+            var files = new List<FileInfoModel>();
+            foreach (var f in list) {
+                var s = f.Split(new[] { ' ' }, 3);
+                var fi = new FileInfoModel {
+                    FileHash = s[0],
+                    FileContext = s[1],
+                    FileName = s[2]
+                };
+                files.Add(fi);
+            }
+            return files;
         }
 
         public static string FileDirectory => "/cfg/aosrepo";
 
-        private static void ListDirectories(IEnumerable<string> directories) {
-            if (!Directory.Exists(FileDirectory))
-                return;
+        public static IEnumerable<RepoModel> GetAll() {
+            var info = GetFileInfo();
+            if (info.Count() < 1)
+                return new List<RepoModel>();
             try {
                 var repos = new List<RepoModel>();
-                foreach (var directory in directories.Where(_ => Directory.Exists(_))) {
+                var contexts = new HashSet<string>();
+                foreach (var c in info) {
+                    contexts.Add(c.FileContext);
+                }
+                foreach (var context in contexts) {
                     var list = new List<FileModel>();
-                    var files = Directory.EnumerateFiles(directory).Where(_ =>
-                    _.EndsWith(".squashfs.xz") ||
-                    _.Contains("System.map") ||
-                    _.Contains("initramfs") ||
-                    _.Contains("kernel")
-                    ).ToList();
+                    var files = info.Where(_ => _.FileContext == context);
                     foreach (var file in files) {
+                        var fpath = $"{sharedRepoDirectory}/{file.FileName}";
                         list.Add(new FileModel {
                             Guid = Guid.NewGuid().ToString(),
-                            ShaSum = GetShaSum(file).Trim(),
-                            Date = GetDate(file).Trim(),
-                            Order = GetOrder(file).Trim(),
-                            FilePath = file.Trim().TrimStart('/'),
-                            FileName = Path.GetFileName(file).Trim(),
-                            Size = GetSize(file).Trim(),
+                            ShaSum = file.FileHash,
+                            Date = GetDate(file.FileName).Trim(),
+                            Order = GetOrder(file.FileName).Trim(),
+                            FilePath = fpath,
+                            FileName = file.FileName,
+                            Size = GetSize(fpath).Trim(),
                             Device = "x86_64",
                             Type = "nightly",
                         });
                     }
                     repos.Add(new RepoModel {
-                        Name = directory.Split('/').Last().Split('.').Last().ToLower(),
+                        Name = context,
                         Files = list.OrderByDescending(_ => _.Order).ThenByDescending(_ => _.FileName).ToList()
                     });
                 }
-                var filePath = $"{FileDirectory}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-filerepo.json";
-                var json = JsonConvert.SerializeObject(repos);
-                File.WriteAllText(filePath, json);
+                return repos;
             }
             catch (Exception ex) {
                 Console.WriteLine(ex);
-                throw;
-            }
-        }
-
-        private static void ListDirectories(IEnumerable<string> directories, IEnumerable<string> otherDirectories) {
-            if (!Directory.Exists(FileDirectory))
-                return;
-            try {
-                var repos = new List<RepoModel>();
-                foreach (var directory in directories.Where(_ => Directory.Exists(_))) {
-                    var list = new List<FileModel>();
-                    var files = Directory.EnumerateFiles(directory).Where(_ =>
-                    _.EndsWith(".squashfs.xz") ||
-                    _.Contains("System.map") ||
-                    _.Contains("initramfs") ||
-                    _.Contains("kernel")
-                    ).ToList();
-                    foreach (var file in files) {
-                        list.Add(new FileModel {
-                            Guid = Guid.NewGuid().ToString(),
-                            ShaSum = GetShaSum(file).Trim(),
-                            Date = GetDate(file).Trim(),
-                            Order = GetOrder(file).Trim(),
-                            FilePath = file.Trim().TrimStart('/'),
-                            FileName = Path.GetFileName(file).Trim(),
-                            Size = GetSize(file).Trim(),
-                            Device = "x86_64",
-                            Type = "nightly",
-                        });
-                    }
-                    repos.Add(new RepoModel {
-                        Name = directory.Split('/').Last().Split('.').Last().ToLower(),
-                        Files = list.OrderByDescending(_ => _.Order).ThenByDescending(_ => _.FileName).ToList()
-                    });
-                }
-                foreach (var directory in otherDirectories.Where(_ => Directory.Exists(_))) {
-                    var list = new List<FileModel>();
-                    var files = Directory.EnumerateFiles(directory).ToList();
-                    foreach (var file in files) {
-                        list.Add(new FileModel {
-                            Guid = Guid.NewGuid().ToString(),
-                            ShaSum = GetShaSum(file).Trim(),
-                            Date = GetDate(file).Trim(),
-                            Order = GetOrder(file).Trim(),
-                            FilePath = file.Trim().TrimStart('/'),
-                            FileName = Path.GetFileName(file).Trim(),
-                            Size = GetSize(file).Trim(),
-                            Device = "x86_64",
-                            Type = "nightly",
-                        });
-                    }
-                    repos.Add(new RepoModel {
-                        Name = directory.Split('/').Last().Split('.').Last().ToLower(),
-                        Files = list.OrderByDescending(_ => _.Order).ThenByDescending(_ => _.FileName).ToList()
-                    });
-                }
-                var filePath = $"{FileDirectory}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-filerepo.json";
-                var json = JsonConvert.SerializeObject(repos);
-                File.WriteAllText(filePath, json);
-            }
-            catch (Exception ex) {
-                Console.WriteLine(ex);
-                throw;
+                return new List<RepoModel>();
             }
         }
 
@@ -180,21 +126,6 @@ namespace aosrepo {
             }
         }
 
-        public static IEnumerable<RepoModel> GetAll() {
-            var repoFile = GetLastFile();
-            if (!File.Exists(repoFile) || string.IsNullOrEmpty(repoFile))
-                return new List<RepoModel>();
-            var text = File.ReadAllText(repoFile);
-            try {
-                return text.Length < 1
-                    ? new List<RepoModel>()
-                    : JsonConvert.DeserializeObject<IEnumerable<RepoModel>>(text);
-            }
-            catch (Exception) {
-                return new List<RepoModel>();
-            }
-        }
-
         public static RepoModel GetByName(string name) {
             return GetAll().FirstOrDefault(_ => _.Name == name);
         }
@@ -205,16 +136,6 @@ namespace aosrepo {
                 list.AddRange(files.Files);
             }
             return list.First(_ => _.Guid == guid).FilePath;
-        }
-
-        public static void LogDownload(string fileName, string requestSource) {
-            if (!Directory.Exists(FileDirectory))
-                return;
-            var filePath = $"{FileDirectory}/download-log.txt";
-            if (!File.Exists(filePath)) {
-                File.WriteAllText(filePath, "Anthilla Repository - Download Log");
-            }
-            File.AppendAllLines(filePath, new[] { $"{DateTime.Now.ToString("yyyyMMdd")} - {fileName} from {requestSource}" });
         }
     }
 }

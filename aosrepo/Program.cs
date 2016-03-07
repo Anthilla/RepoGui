@@ -46,7 +46,7 @@ namespace aosrepo {
         public static void Loop(string command) {
             switch (command) {
                 case "update":
-                    Repository.Update();
+                    //Repository.Update();
                     Console.WriteLine("Repository up to date!");
                     return;
                 default:
