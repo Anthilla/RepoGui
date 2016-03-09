@@ -56,7 +56,7 @@ namespace aosrepo {
                             ShaSum = file.FileHash,
                             Date = GetDate(file.FileName).Trim(),
                             Order = GetOrder(file.FileName).Trim(),
-                            FilePath = GetDownloadUrl(file.FileName),
+                            FilePath = $"http://srv.anthilla.com/{file.FileName}",
                             FileName = file.FileName,
                             Size = GetSize(fpath).Trim(),
                             Device = "x86_64",
@@ -74,12 +74,6 @@ namespace aosrepo {
                 Console.WriteLine(ex);
                 return new List<RepoModel>();
             }
-        }
-
-        private static string GetDownloadUrl(string fileName) {
-            var serverListPath = $"{sharedRepoDirectory}/{serverListFile}";
-            var srv = File.ReadAllLines(serverListPath);
-            return $"{srv.FirstOrDefault()}:8080/{fileName}";
         }
 
         private static string GetOrder(string path) {
