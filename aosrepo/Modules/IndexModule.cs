@@ -1,9 +1,7 @@
-﻿using System.Collections.Generic;
-using System.Dynamic;
+﻿using System.Dynamic;
 using System.IO;
 using Nancy;
-using Nancy.Responses;
-using System;
+using System.Net.Http;
 
 namespace aosrepo.Modules {
     public class IndexModule : NancyModule {
