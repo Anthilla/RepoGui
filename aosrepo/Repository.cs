@@ -3,40 +3,21 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.IO;
 using System.Linq;
-using Newtonsoft.Json;
 using aosrepo.Model;
 
 namespace aosrepo {
     public class Repository {
-        private static string sharedRepoDirectory = "/Data/Dev01/AOS_Repo/repo.public";
-        private static string serverListFile = "server.list";
-        private static string repoListFile = "repo.list";
+        private static string repoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt.bz2";
+        private static string readableRepoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt";
 
-        public static IEnumerable<FileInfoModel> GetFileInfo() {
-            try {
-                var repoListPath = $"{sharedRepoDirectory}/{repoListFile}";
-                var list = File.ReadAllLines(repoListPath);
-                var files = new List<FileInfoModel>();
-                foreach (var f in list) {
-                    var s = f.Split(new[] { ' ' }, 3);
-                    var fi = new FileInfoModel {
-                        FileHash = s[0],
-                        FileContext = s[1],
-                        FileName = s[2]
-                    };
-                    files.Add(fi);
-                }
-                return files;
+        public Repository() {
+            if (File.Exists(readableRepoListFilePath)) {
+                File.Delete(readableRepoListFilePath);
             }
-            catch(Exception ex) {
-                Console.WriteLine($"error: {ex.Message}");
-                return new List<FileInfoModel>();
-            }
+            Terminal.Terminal.Execute($"bunzip2 {repoListFilePath}");
         }
 
-        public static string FileDirectory => "/cfg/aosrepo";
-
-        public static IEnumerable<RepoModel> GetAll() {
+        public IEnumerable<RepoModel> GetAll() {
             var info = GetFileInfo();
             if (info.Count() < 1)
                 return new List<RepoModel>();
@@ -73,6 +54,27 @@ namespace aosrepo {
             catch (Exception ex) {
                 Console.WriteLine(ex);
                 return new List<RepoModel>();
+            }
+        }
+
+        public static IEnumerable<FileInfoModel> GetFileInfo() {
+            try {
+                var list = File.ReadAllLines(readableRepoListFilePath);
+                var files = new List<FileInfoModel>();
+                foreach (var f in list) {
+                    var s = f.Split(new[] { ' ' }, 3);
+                    var fi = new FileInfoModel {
+                        FileHash = s[0],
+                        FileContext = s[1],
+                        FileName = s[2]
+                    };
+                    files.Add(fi);
+                }
+                return files;
+            }
+            catch (Exception ex) {
+                Console.WriteLine($"error: {ex.Message}");
+                return new List<FileInfoModel>();
             }
         }
 
@@ -117,32 +119,6 @@ namespace aosrepo {
             catch (Exception) {
                 return "";
             }
-        }
-
-        private static string GetShaSum(string path) {
-            return !File.Exists(path) ? null : Terminal.Terminal.Execute($"sha1sum {path}").Split(' ').First();
-        }
-
-        private static string GetLastFile() {
-            try {
-                var files = Directory.EnumerateFiles(FileDirectory, "*.json").ToList();
-                return !files.Any() ? null : files.Last();
-            }
-            catch (Exception) {
-                return null;
-            }
-        }
-
-        public static RepoModel GetByName(string name) {
-            return GetAll().FirstOrDefault(_ => _.Name == name);
-        }
-
-        public static string GetFilePath(string guid) {
-            var list = new List<FileModel>();
-            foreach (var files in GetAll()) {
-                list.AddRange(files.Files);
-            }
-            return list.First(_ => _.Guid == guid).FilePath;
         }
     }
 }

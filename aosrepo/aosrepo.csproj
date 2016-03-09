@@ -121,7 +121,6 @@
     <Compile Include="Settings.cs" />
     <Compile Include="Repository.cs" />
     <Compile Include="Terminal\Terminal.cs" />
-    <Compile Include="Update.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="Content\anthilla_logo.png">
