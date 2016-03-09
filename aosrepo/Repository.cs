@@ -31,7 +31,7 @@ namespace aosrepo {
                     var list = new List<FileModel>();
                     var files = info.Where(_ => _.FileContext == context);
                     foreach (var file in files) {
-                        var fpath = $"{sharedRepoDirectory}/{file.FileName}";
+                        var fpath = $"/Data/Dev01/AOS_Repo/repo.public/{file.FileName}";
                         list.Add(new FileModel {
                             Guid = Guid.NewGuid().ToString(),
                             ShaSum = file.FileHash,
