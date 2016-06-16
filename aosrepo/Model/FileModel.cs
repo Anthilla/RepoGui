@@ -1,11 +1,4 @@
-﻿using System.Collections.Generic;
-
-namespace aosrepo {
-    public class RepoModel {
-        public string Name { get; set; }
-        public List<FileModel> Files { get; set; }
-    }
-
+﻿namespace aosrepo.Model {
     public class FileModel {
         public string Guid { get; set; }
         public string ShaSum { get; set; }

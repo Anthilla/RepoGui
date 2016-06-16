@@ -82,20 +82,5 @@
     <link async="" href="/Content/metro-icons.min.css" type="text/css" rel="stylesheet">
     <script src="/Scripts/jquery-2.2.0.min.js"></script>
     <script async="" src="/Scripts/metro.min.js"></script>
-    <script async="" type="text/javascript">
-        $('#reload').click(function () {
-            jQuery.support.cors = true;
-            $.ajax({
-                url: "/update",
-                type: "POST",
-                beforeSend: function () {
-                    $('#reload').toggleClass('mif-ani-spin');
-                },
-                success: function () {
-                    location.reload(true);
-                }
-            });
-        });
-    </script>
 </body>
 </html>

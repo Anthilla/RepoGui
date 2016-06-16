@@ -12,6 +12,7 @@ namespace aosrepo.Modules {
             Get["/login"] = x => {
                 dynamic model = new ExpandoObject();
                 var returnUrl = (string)Request.Query.returnUrl;
+                model.Username = "master";
                 model.ReturnUrl = returnUrl;
                 model.Title = "Welcome" + returnUrl;
                 model.Copyright = @"© 2013 - " + DateTime.Now.ToString("yyyy") + " Anthilla S.r.l.";
@@ -24,7 +25,7 @@ namespace aosrepo.Modules {
                 cookies.Remove("aosrepo-session");
                 var username = (string)Request.Form.Username;
                 var password = (string)Request.Form.Password;
-                var validationGuid = UserDatabase.ValidateUser(username, password);
+                var validationGuid = new UserDatabase().ValidateUser(username, password);
                 if (validationGuid == null) {
                     return Context.GetRedirect("/login");
                 }

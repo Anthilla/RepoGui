@@ -43,7 +43,6 @@ namespace aosrepo.Terminal {
                     output += streamReader.ReadToEnd();
                 }
                 process.WaitForExit();
-                Console.WriteLine(output);
                 return output;
             }
             catch (Exception) {

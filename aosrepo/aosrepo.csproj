@@ -105,9 +105,10 @@
     <Compile Include="Bootstrapper.cs" />
     <Compile Include="Download.cs" />
     <Compile Include="Extensions.cs" />
-    <Compile Include="FileManagement.cs" />
+    <Compile Include="Model\RepoModel.cs" />
+    <Compile Include="Model\FileModel.cs" />
     <Compile Include="Login\UserDatabase.cs" />
-    <Compile Include="Login\UserEntity.cs" />
+    <Compile Include="Login\UserIdentity.cs" />
     <Compile Include="Model\FileInfoModel.cs" />
     <Compile Include="Modules\IndexModule.cs" />
     <Compile Include="Modules\LoginModule.cs" />

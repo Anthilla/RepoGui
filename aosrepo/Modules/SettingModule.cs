@@ -18,6 +18,12 @@ namespace aosrepo.Modules {
                 Settings.Update(text);
                 return Response.AsRedirect("/settings");
             };
+
+            Post["/update"] = x => {
+                var text = (string)Request.Form.Text;
+                Settings.Update(text);
+                return Response.AsRedirect("/settings");
+            };
         }
     }
 }

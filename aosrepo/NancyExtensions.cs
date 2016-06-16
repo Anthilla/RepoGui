@@ -33,7 +33,7 @@ namespace aosrepo {
             pipelines.AfterRequest.AddItemToEndOfPipeline(CheckForCompression);
         }
 
-        static void CheckForCompression(NancyContext context) {
+        private static void CheckForCompression(NancyContext context) {
             if (!RequestIsGzipCompatible(context.Request)) {
                 return;
             }
@@ -53,7 +53,7 @@ namespace aosrepo {
             CompressResponse(context.Response);
         }
 
-        static void CompressResponse(Response response) {
+        private static void CompressResponse(Response response) {
             response.Headers.Add("Expires", DateTime.Now.Add(TimeSpan.FromDays(365)).ToString("R"));
             response.Headers["Transfer-Encoding"] = "chunked";
             response.Headers["Content-Encoding"] = "gzip";
@@ -68,7 +68,7 @@ namespace aosrepo {
             };
         }
 
-        static bool ContentLengthIsTooSmall(Response response) {
+        private static bool ContentLengthIsTooSmall(Response response) {
             string contentLength;
             if (response.Headers.TryGetValue("Content-Length", out contentLength)) {
                 var length = long.Parse(contentLength);
@@ -91,11 +91,11 @@ namespace aosrepo {
                                                     "application/javascript"
                                                 };
 
-        static bool ResponseIsCompatibleMimeType(Response response) {
+        private static bool ResponseIsCompatibleMimeType(Response response) {
             return ValidMimes.Any(x => x == response.ContentType);
         }
 
-        static bool RequestIsGzipCompatible(Request request) {
+        private static bool RequestIsGzipCompatible(Request request) {
             return request.Headers.AcceptEncoding.Any(x => x.Contains("gzip"));
         }
     }

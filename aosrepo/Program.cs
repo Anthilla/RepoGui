@@ -6,48 +6,23 @@ using System.Net;
 
 namespace aosrepo {
     internal static class Program {
-        private static void Main(string[] args) {
-            try {
-                Console.Title = "aosrepo";
-                ServerConfiguration.CheckDirectories();
-                var ip = ServerConfiguration.GetServerIp();
-                var port = ServerConfiguration.GetServerPort();
-                ServerConfiguration.SetMasterFile();
-                ServerConfiguration.SetSettingsFile();
-                using (WebApp.Start<Startup>($"http://{ip}:{port}/")) {
-                    Console.WriteLine($"Running on http://{ip}:{port}/");
-                    while (true) {
-                        var command = args.Length > 0 ? args[0] : Console.ReadLine();
-                        if (!string.IsNullOrEmpty(command)) {
-                            Command.Loop(command.Trim());
-                        }
-                    }
-                }
-            }
-            catch (Exception ex) {
-                const string dir = "/cfg/aosrepo";
-                if (!Directory.Exists(dir)) {
-                    Directory.CreateDirectory(dir);
-                }
-                var reportDir = $"{dir}/report";
-                if (!Directory.Exists(reportDir)) {
-                    Directory.CreateDirectory(reportDir);
-                }
-                var file = $"{reportDir}/{DateTime.Now.ToString("yyyyMMddHHmmssfff")}-crash-report.txt";
-                File.WriteAllText(file, ex.ToString());
+        private static void Main() {
+            Console.Title = "aosrepo";
+            ServerConfiguration.CheckDirectories();
+            var ip = ServerConfiguration.GetServerIp();
+            var port = ServerConfiguration.GetServerPort();
+            ServerConfiguration.SetMasterFile();
+            ServerConfiguration.SetSettingsFile();
+            using (WebApp.Start<Startup>($"http://{ip}:{port}/")) {
+                Console.WriteLine($"Running on http://{ip}:{port}/");
+                KeepAlive();
             }
         }
-    }
 
-    public class Command {
-        public static void Loop(string command) {
-            switch (command) {
-                case "update":
-                    Console.WriteLine("Repository up to date!");
-                    return;
-                default:
-                    Console.WriteLine($"{command} command does not exist");
-                    return;
+        private static void KeepAlive() {
+            var r = Console.ReadLine();
+            while (r != "quit") {
+                r = Console.ReadLine();
             }
         }
     }
@@ -97,7 +72,7 @@ namespace aosrepo {
             const string configDir = "/cfg/aosrepo/config";
             var portConfigFile = $"{configDir}/master.cfg";
             if (!File.Exists(portConfigFile)) {
-                File.WriteAllText(portConfigFile, "change your password!!");
+                File.WriteAllText(portConfigFile, "user:password");
             }
             return File.ReadAllText(portConfigFile).Trim();
         }

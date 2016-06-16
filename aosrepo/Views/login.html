@@ -60,15 +60,10 @@
         <h4 style="text-align: center;">Aos Repository</h4>
 
         <div class="cell">
-            <label>Username</label>
-            <div class="input-control text full-size">
-                <input type="hidden" value="@Model.ReturnUrl" name="Return"/>
-                <input class="bg-anthilla-gray fg-white bd-anthilla-green" type="text" name="Username">
-            </div>
-        </div>
-        <div class="cell">
             <label>Password</label>
             <div class="input-control password full-size">
+                <input type="hidden" value="@Model.ReturnUrl" name="Return" />
+                <input type="hidden" value="@Model.Username" name="Username" />
                 <input class="bg-anthilla-gray fg-white bd-anthilla-green" type="password" name="Password">
             </div>
         </div>

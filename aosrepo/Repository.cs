@@ -7,19 +7,19 @@ using aosrepo.Model;
 
 namespace aosrepo {
     public class Repository {
-        private string repoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt.bz2";
-        private string readableRepoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt";
+        private const string RepoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt.bz2";
+        private const string ReadableRepoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt";
 
         public Repository() {
-            if (File.Exists(readableRepoListFilePath)) {
-                File.Delete(readableRepoListFilePath);
+            if (File.Exists(ReadableRepoListFilePath)) {
+                File.Delete(ReadableRepoListFilePath);
             }
-            Terminal.Terminal.Execute($"bunzip2 -k {repoListFilePath}");
+            Terminal.Terminal.Execute($"bunzip2 -k {RepoListFilePath}");
         }
 
         public IEnumerable<RepoModel> GetAll() {
-            var info = GetFileInfo();
-            if (info.Count() < 1)
+            var info = GetFileInfo().ToList();
+            if (!info.Any())
                 return new List<RepoModel>();
             try {
                 var repos = new List<RepoModel>();
@@ -29,9 +29,8 @@ namespace aosrepo {
                 }
                 foreach (var context in contexts) {
                     var list = new List<FileModel>();
-                    var files = info.Where(_ => _.FileContext == context);
-                    foreach (var file in files) {
-                        var fpath = $"/Data/Dev01/AOS_Repo/repo.public/{file.FileName}";
+                    foreach (var file in info.Where(_ => _.FileContext == context)) {
+                        var filepath = $"/Data/Dev01/AOS_Repo/repo.public/{file.FileName}";
                         list.Add(new FileModel {
                             Guid = Guid.NewGuid().ToString(),
                             ShaSum = file.FileHash,
@@ -39,9 +38,9 @@ namespace aosrepo {
                             Order = GetOrder(file.FileName).Trim(),
                             FilePath = $"http://srv.anthilla.com/{file.FileName}",
                             FileName = file.FileName,
-                            Size = GetSize(fpath).Trim(),
+                            Size = GetSize(filepath).Trim(),
                             Device = "x86_64",
-                            Type = "nightly",
+                            Type = "nightly"
                         });
                     }
                     repos.Add(new RepoModel {
@@ -51,15 +50,14 @@ namespace aosrepo {
                 }
                 return repos;
             }
-            catch (Exception ex) {
-                Console.WriteLine(ex);
+            catch (Exception) {
                 return new List<RepoModel>();
             }
         }
 
-        private IEnumerable<FileInfoModel> GetFileInfo() {
+        private static IEnumerable<FileInfoModel> GetFileInfo() {
             try {
-                var list = File.ReadAllLines(readableRepoListFilePath);
+                var list = File.ReadAllLines(ReadableRepoListFilePath);
                 var files = new List<FileInfoModel>();
                 foreach (var f in list) {
                     var s = f.Split(new[] { ' ' }, 3);
@@ -72,13 +70,12 @@ namespace aosrepo {
                 }
                 return files;
             }
-            catch (Exception ex) {
-                Console.WriteLine($"error: {ex.Message}");
+            catch (Exception) {
                 return new List<FileInfoModel>();
             }
         }
 
-        private string GetOrder(string path) {
+        private static string GetOrder(string path) {
             if (string.IsNullOrEmpty(path))
                 return "";
             try {
@@ -94,7 +91,7 @@ namespace aosrepo {
             }
         }
 
-        private string GetDate(string path) {
+        private static string GetDate(string path) {
             if (string.IsNullOrEmpty(path))
                 return "";
             try {
@@ -107,7 +104,7 @@ namespace aosrepo {
             }
         }
 
-        private string GetSize(string path) {
+        private static string GetSize(string path) {
             if (!File.Exists(path))
                 return "";
             try {
