@@ -1,11 +1,8 @@
-﻿using aosrepo.Middleware;
-using Nancy.Owin;
-using Owin;
+﻿using Owin;
 using System;
 using System.IO;
 using Microsoft.Owin.Hosting;
 using System.Net;
-using Nancy;
 
 namespace aosrepo {
     internal static class Program {
@@ -15,6 +12,7 @@ namespace aosrepo {
                 ServerConfiguration.CheckDirectories();
                 var ip = ServerConfiguration.GetServerIp();
                 var port = ServerConfiguration.GetServerPort();
+                ServerConfiguration.SetMasterFile();
                 ServerConfiguration.SetSettingsFile();
                 using (WebApp.Start<Startup>($"http://{ip}:{port}/")) {
                     Console.WriteLine($"Running on http://{ip}:{port}/");
@@ -22,9 +20,7 @@ namespace aosrepo {
                         var command = args.Length > 0 ? args[0] : Console.ReadLine();
                         if (!string.IsNullOrEmpty(command)) {
                             Command.Loop(command.Trim());
-                            continue;
                         }
-                        continue;
                     }
                 }
             }
@@ -47,7 +43,6 @@ namespace aosrepo {
         public static void Loop(string command) {
             switch (command) {
                 case "update":
-                    //Repository.Update();
                     Console.WriteLine("Repository up to date!");
                     return;
                 default:
@@ -63,14 +58,8 @@ namespace aosrepo {
             if (app.Properties.TryGetValue(typeof(HttpListener).FullName, out httpListener) && httpListener is HttpListener) {
                 ((HttpListener)httpListener).IgnoreWriteExceptions = true;
             }
-            app.UseDebugMiddleware();
-            app.UseNancy();
-            app.UseDebugMiddleware(new DebugMiddlewareOptions() {
-                OnIncomingRequest = context => context.Response.WriteAsync("## Beginning ##"),
-                OnOutGoingRequest = context => context.Response.WriteAsync("## End ##")
-            });
             //StaticConfiguration.DisableErrorTraces = false;
-            app.UseNancy(options => options.PassThroughWhenStatusCodesAre(Nancy.HttpStatusCode.NotFound));
+            app.UseNancy();
         }
     }
 
@@ -100,6 +89,15 @@ namespace aosrepo {
             var portConfigFile = $"{configDir}/ip.cfg";
             if (!File.Exists(portConfigFile)) {
                 File.WriteAllText(portConfigFile, "+");
+            }
+            return File.ReadAllText(portConfigFile).Trim();
+        }
+
+        public static string SetMasterFile() {
+            const string configDir = "/cfg/aosrepo/config";
+            var portConfigFile = $"{configDir}/master.cfg";
+            if (!File.Exists(portConfigFile)) {
+                File.WriteAllText(portConfigFile, "change your password!!");
             }
             return File.ReadAllText(portConfigFile).Trim();
         }

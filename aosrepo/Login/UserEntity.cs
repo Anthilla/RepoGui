@@ -29,14 +29,13 @@ namespace aosrepo.Login {
         public enum ClaimMode : byte {
             Antd = 1,
             ActiveDirectory = 3,
-            AnthillaSP = 4,
+            AnthillaSp = 4,
             Null = 98,
             Other = 99
         }
 
         public class UserEntityModel {
-            public string _Id { get; set; } = Guid.NewGuid().ToString();
-            public Guid Guid => Guid.Parse(_Id);
+            public Guid Id { get; set; } = Guid.NewGuid();
             public string MasterGuid { get; set; }
             public string MasterUsername { get; set; }
             public string MasterAlias { get; set; }

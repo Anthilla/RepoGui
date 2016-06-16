@@ -75,7 +75,7 @@
         $('#reload').click(function () {
             jQuery.support.cors = true;
             $.ajax({
-                url: "/update",
+                url: "/settings",
                 type: "POST",
                 beforeSend: function () {
                     $('#reload').toggleClass('mif-ani-spin');

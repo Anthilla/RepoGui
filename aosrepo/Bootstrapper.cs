@@ -31,8 +31,8 @@ namespace aosrepo {
 
         protected override void RequestStartup(TinyIoCContainer requestContainer, IPipelines pipelines, NancyContext context) {
             var formsAuthConfiguration =
-                new FormsAuthenticationConfiguration() {
-                    RedirectUrl = "~/login",
+                new FormsAuthenticationConfiguration {
+                    RedirectUrl = "/login",
                     UserMapper = requestContainer.Resolve<IUserMapper>(),
                 };
             FormsAuthentication.Enable(pipelines, formsAuthConfiguration);

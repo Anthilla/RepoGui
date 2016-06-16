@@ -7,14 +7,14 @@ using aosrepo.Model;
 
 namespace aosrepo {
     public class Repository {
-        private static string repoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt.bz2";
-        private static string readableRepoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt";
+        private string repoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt.bz2";
+        private string readableRepoListFilePath = "/Data/Dev01/AOS_Repo/repo.public/repo.txt";
 
         public Repository() {
             if (File.Exists(readableRepoListFilePath)) {
                 File.Delete(readableRepoListFilePath);
             }
-            Terminal.Terminal.Execute($"bunzip2 {repoListFilePath}");
+            Terminal.Terminal.Execute($"bunzip2 -k {repoListFilePath}");
         }
 
         public IEnumerable<RepoModel> GetAll() {
@@ -57,7 +57,7 @@ namespace aosrepo {
             }
         }
 
-        public static IEnumerable<FileInfoModel> GetFileInfo() {
+        private IEnumerable<FileInfoModel> GetFileInfo() {
             try {
                 var list = File.ReadAllLines(readableRepoListFilePath);
                 var files = new List<FileInfoModel>();
@@ -78,7 +78,7 @@ namespace aosrepo {
             }
         }
 
-        private static string GetOrder(string path) {
+        private string GetOrder(string path) {
             if (string.IsNullOrEmpty(path))
                 return "";
             try {
@@ -94,7 +94,7 @@ namespace aosrepo {
             }
         }
 
-        private static string GetDate(string path) {
+        private string GetDate(string path) {
             if (string.IsNullOrEmpty(path))
                 return "";
             try {
@@ -107,7 +107,7 @@ namespace aosrepo {
             }
         }
 
-        private static string GetSize(string path) {
+        private string GetSize(string path) {
             if (!File.Exists(path))
                 return "";
             try {

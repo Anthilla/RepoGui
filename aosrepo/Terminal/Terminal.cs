@@ -3,7 +3,7 @@ using System.Diagnostics;
 
 namespace aosrepo.Terminal {
     public class Terminal {
-        private static bool IsUnix = Environment.OSVersion.Platform == PlatformID.Unix;
+        private static readonly bool IsUnix = Environment.OSVersion.Platform == PlatformID.Unix;
 
         public static string Execute(string command, string dir = "") {
             var output = string.Empty;

@@ -14,17 +14,17 @@ namespace aosrepo.Login {
     }
 
     public class UserDatabase : IUserMapper {
-
         private static IEnumerable<UserEntity.UserEntityModel> Users() {
+            var guid = Guid.Parse("ACE0B402-87D1-45A0-9DA6-7B6C10B9B894");
             var userList = new List<UserEntity.UserEntityModel> {
                 new UserEntity.UserEntityModel {
-                    _Id = "00000000-0000-0000-0000-000000000500",
-                    MasterGuid = "00000000-0000-0000-0000-000000000500",
+                    Id = guid,
+                    MasterGuid = guid.ToString(),
                     MasterUsername = "master",
                     IsEnabled = true,
                     Claims = new List<UserEntity.UserEntityModel.Claim> {
                         new UserEntity.UserEntityModel.Claim {
-                            ClaimGuid = "00000000-0000-0000-0000-000000000500",
+                            ClaimGuid = guid.ToString(),
                             Type= UserEntity.ClaimType.UserPassword,
                             Key = "master-password",
                             Value= GetMasterPassword()
@@ -36,34 +36,26 @@ namespace aosrepo.Login {
         }
 
         private static string GetMasterPassword() {
-            var path = "/cfg/aosrepo/config/master.cfg";
-            if (!File.Exists(path)) {
-                return string.Empty;
-            }
-            return File.ReadAllText(path.Trim());
+            const string path = "/cfg/aosrepo/config/master.cfg";
+            return !File.Exists(path) ? string.Empty : File.ReadAllText(path.Trim());
         }
 
         public IUserIdentity GetUserFromIdentifier(Guid identifier, NancyContext context) {
-            var userRecord = Users().FirstOrDefault(u => u.Guid == identifier);
+            var users = Users().ToList();
+            var userRecord = users.FirstOrDefault(u => u.Id == identifier);
             return userRecord == null
                        ? null
                        : new UserIdentity { UserName = userRecord.MasterUsername };
         }
 
         public static string GetUserEmail(Guid identifier) {
-            var user = Users().FirstOrDefault(u => u.Guid == identifier);
+            var user = Users().FirstOrDefault(u => u.Id == identifier);
             return user?.MasterUsername;
         }
 
         public static Guid? ValidateUser(string userIdentity, string password) {
-            if (userIdentity == "master" && password == "master123") {
-                return Guid.Parse("00000000-0000-0000-0000-000000000500");
-            }
             var validUser = Users().FirstOrDefault(_ => _.MasterUsername == userIdentity);
-            if (validUser == null) {
-                return null;
-            }
-            var validClaim = validUser.Claims.FirstOrDefault(_ => _.Key == "master-password" && _.Value == password);
+            var validClaim = validUser?.Claims.FirstOrDefault(_ => _.Key == "master-password" && _.Value == password);
             if (validClaim == null) {
                 return null;
             }
